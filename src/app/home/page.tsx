@@ -9,7 +9,6 @@ export default function Home() {
       <div className="p-10 text-5xl">
         <h1>Discover the best recipes</h1>
       </div>
-
       <section className="p-2 md:p-10">
         <CardsComp />
       </section>

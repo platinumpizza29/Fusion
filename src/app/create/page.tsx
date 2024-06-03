@@ -144,13 +144,7 @@ export default function CreateRecipe() {
                 placeholder="Name"
                 required
               />
-              <input
-                name="ingredientQuantity"
-                type="text"
-                className="input input-bordered w-full"
-                placeholder="Quantity"
-                required
-              />
+
             </div>
           </div>
           <div className="mb-6">
