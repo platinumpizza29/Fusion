@@ -27,7 +27,7 @@ export default async function RecipePage(context: GetServerSidePropsContext) {
   return (
     <div className="h-screen w-screen">
       <NavbarComp />
-      <div className="mx-4 space-y-6 p-8 md:mx-12 lg:mx-24">
+      <div className="mx-4 space-y-6 p-2 md:mx-12 md:p-8 lg:mx-24">
         <Link href="/home">
           <IoIosArrowBack className="text-3xl" />
         </Link>
@@ -43,7 +43,7 @@ export default async function RecipePage(context: GetServerSidePropsContext) {
             />
           )}
         </div>
-        <h1 className="text-7xl">{getRecipe?.title}</h1>
+        <h1 className="text-5xl md:text-7xl">{getRecipe?.title}</h1>
         <p>{getRecipe?.description}</p>
         {/* cook time prep time div */}
         <div className="flex flex-col justify-evenly space-y-2 rounded-lg bg-base-200 p-4 md:flex-row">

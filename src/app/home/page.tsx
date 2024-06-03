@@ -10,7 +10,7 @@ export default function Home() {
         <h1>Discover the best recipes</h1>
       </div>
 
-      <section className="p-10">
+      <section className="p-2 md:p-10">
         <CardsComp />
       </section>
     </div>
