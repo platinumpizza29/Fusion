@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-base-to-string */
 import React from "react";
 import Link from "next/link";
 import { IoIosArrowBack } from "react-icons/io";
@@ -8,41 +9,50 @@ import { redirect } from "next/navigation";
 export default function CreateRecipe() {
   const handleFormSubmit = async (formData: FormData) => {
     "use server";
-    const title = formData.get("title")?.toString();
-    const description = formData.get("description")?.toString();
-    const imageUrl = formData.get("imageUrl")?.toString();
-    const category = formData.get("category")?.toString();
-    const prepTime = formData.get("prepTime")?.toString();
-    const cookTime = formData.get("cookTime")?.toString();
-    const servings = formData.get("servings")?.toString();
-    const ingredients = formData.getAll("ingredients[]");
-    const ingredientQuantities = formData.getAll("ingredientQuantities[]");
-    const instructions = formData.getAll("instructions[]");
+    const title = formData.get("title")?.toString() ?? "";
+    const description = formData.get("description")?.toString() ?? "";
+    const imageUrl = formData.get("imageUrl")?.toString() ?? "";
+    const category = formData.get("category")?.toString() ?? "";
+    const prepTime = formData.get("prepTime")?.toString() ?? "0";
+    const cookTime = formData.get("cookTime")?.toString() ?? "0";
+    const servings = formData.get("servings")?.toString() ?? "0";
+    const ingredients = formData
+      .getAll("ingredients[]")
+      .map((item) =>
+        item !== null && item !== undefined ? item.toString() : "",
+      );
+
+    const ingredientQuantities = formData
+      .getAll("ingredientQuantities[]")
+      .map((item) => item.toString());
+    const instructions = formData
+      .getAll("instructions[]")
+      .map((item) => item.toString());
 
     const { userId } = auth();
 
     try {
       const newRecipe = await db.recipe.create({
         data: {
-          title: title!,
+          title,
           userId: userId!,
-          description: description!,
-          imageUrl: imageUrl!,
-          prepTime: parseInt(prepTime!),
-          cookTime: parseInt(cookTime!),
-          servings: parseInt(servings!),
+          description,
+          imageUrl,
+          prepTime: parseInt(prepTime, 10),
+          cookTime: parseInt(cookTime, 10),
+          servings: parseInt(servings, 10),
           createdAt: new Date(),
           updatedAt: new Date(),
           Ingredient: {
             create: ingredients.map((ingredient, index) => ({
-              name: ingredient.toString(),
-              quantity: ingredientQuantities[index]!.toString(),
+              name: ingredient,
+              quantity: ingredientQuantities[index] ?? "",
             })),
           },
           Instruction: {
             create: instructions.map((instruction, index) => ({
               step: index + 1,
-              text: instruction.toString(),
+              text: instruction,
             })),
           },
         },
@@ -194,4 +204,3 @@ export default function CreateRecipe() {
     </div>
   );
 }
-
