@@ -1,28 +1,55 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Category {
+  id             Int              @id @default(autoincrement())
+  name           String           @unique
+  RecipeCategory RecipeCategory[]
+}
+
+model Ingredient {
+  id       Int    @id @default(autoincrement())
+  name     String
+  quantity String
+  recipeId Int
+  Recipe   Recipe @relation(fields: [recipeId], references: [id])
+}
+
+model Instruction {
+  id       Int    @id @default(autoincrement())
+  step     Int
+  text     String
+  recipeId Int
+  Recipe   Recipe @relation(fields: [recipeId], references: [id])
 }
 
 model Recipe {
-  id           Int      @id @default(autoincrement())
-  title        String
-  description  String
-  instructions String
-  ingredients  String
-  imageUrl     String
-  prepTime     Int // Time in minutes
-  cookTime     Int // Time in minutes
-  servings     Int
-  author       String
-  userId       String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  category     String
+  id             Int              @id @default(autoincrement())
+  title          String
+  description    String
+  imageUrl       String
+  prepTime       Int
+  cookTime       Int
+  servings       Int
+  userId         String
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime
+  Ingredient     Ingredient[]
+  Instruction    Instruction[]
+  RecipeCategory RecipeCategory[]
+}
+
+model RecipeCategory {
+  id         Int      @id @default(autoincrement())
+  recipeId   Int
+  categoryId Int
+  Category   Category @relation(fields: [categoryId], references: [id])
+  Recipe     Recipe   @relation(fields: [recipeId], references: [id])
 }

@@ -18,14 +18,15 @@ export default async function RecipePage(context: GetServerSidePropsContext) {
     where: {
       id: id,
     },
+    include: {
+      Ingredient: true,
+      Instruction: true,
+      RecipeCategory: true,
+    },
   });
 
-  const instructions: string[] | undefined = getRecipe?.instructions.split(",");
-  const ingredients: string[] | undefined = getRecipe?.ingredients.split(",");
-
-  ("use client");
   return (
-    <div className="h-screen w-screen">
+    <div className="h-screen w-screen overflow-auto">
       <NavbarComp />
       <div className="mx-4 space-y-6 p-2 md:mx-12 md:p-8 lg:mx-24">
         <Link href="/home">
@@ -64,9 +65,9 @@ export default async function RecipePage(context: GetServerSidePropsContext) {
           <div className="space-y-4">
             <h1 className="text-pretty text-2xl text-primary">Ingredients</h1>
             <div className="space-y-2 text-wrap p-4">
-              {ingredients?.map((item, index) => (
+              {getRecipe?.Ingredient.map((item, index) => (
                 <ul key={index} className="list-disc text-pretty">
-                  <li className="text-wrap">{item}</li>
+                  <li className="text-wrap">{item.name}</li>
                 </ul>
               ))}
             </div>
@@ -74,9 +75,9 @@ export default async function RecipePage(context: GetServerSidePropsContext) {
           <div className="space-y-4">
             <h1 className="text-pretty text-2xl text-primary">Instructions</h1>
             <div className="space-y-2 text-wrap p-4">
-              {instructions?.map((item, index) => (
+              {getRecipe?.Instruction?.map((item, index) => (
                 <ul key={index} className="list-disc text-pretty">
-                  <li>{item}</li>
+                  <li>{item.text}</li>
                 </ul>
               ))}
             </div>

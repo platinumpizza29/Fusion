@@ -12,7 +12,7 @@ export default function HomePage() {
   return (
     <main className="h-screen w-screen">
       <NavbarComp />
-      <section className="h-3/4 w-full space-y-4 bg-green-800 p-20  text-white">
+      <section className="h-3/4 w-full space-y-4 bg-green-800  p-20 text-white">
         <h1 className="flex flex-col text-start text-4xl font-bold md:text-6xl">
           <span>Easiest Way </span>
           <span>to Make Your </span>
