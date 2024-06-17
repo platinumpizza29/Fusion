@@ -11,13 +11,13 @@ export default function CreateRecipe() {
     const title = formData.get("title")?.toString();
     const description = formData.get("description")?.toString();
     const imageUrl = formData.get("imageUrl")?.toString();
-    const category = formData.getAll("category");
-    const prepTime = formData.getAll("prepTime");
-    const cookTime = formData.getAll("cookTime");
-    const servings = formData.getAll("servings");
-    const author = formData.getAll("author");
-    const ingredients = formData.getAll("ingredients");
-    const instructions = formData.getAll("instructions");
+    const category = formData.get("category")?.toString();
+    const prepTime = formData.get("prepTime")?.toString();
+    const cookTime = formData.get("cookTime")?.toString();
+    const servings = formData.get("servings")?.toString();
+    const ingredients = formData.getAll("ingredients[]");
+    const ingredientQuantities = formData.getAll("ingredientQuantities[]");
+    const instructions = formData.getAll("instructions[]");
 
     const { userId } = auth();
 
@@ -28,20 +28,42 @@ export default function CreateRecipe() {
           userId: userId!,
           description: description!,
           imageUrl: imageUrl!,
-          category: category.toString(),
-          prepTime: parseInt((prepTime ?? 0).toString()),
-          cookTime: parseInt((cookTime ?? 0).toString()),
-          servings: parseInt((servings ?? 0).toString()),
-          author: author?.toString(),
-          ingredients: ingredients.toString(),
-          instructions: instructions.toString(),
+          prepTime: parseInt(prepTime!),
+          cookTime: parseInt(cookTime!),
+          servings: parseInt(servings!),
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          Ingredient: {
+            create: ingredients.map((ingredient, index) => ({
+              name: ingredient.toString(),
+              quantity: ingredientQuantities[index]!.toString(),
+            })),
+          },
+          Instruction: {
+            create: instructions.map((instruction, index) => ({
+              step: index + 1,
+              text: instruction.toString(),
+            })),
+          },
         },
       });
 
-      if (newRecipe) {
-        redirect("/home");
-      } else {
+      if (category) {
+        const categoryData = await db.category.findUnique({
+          where: { name: category },
+        });
+
+        if (categoryData) {
+          await db.recipeCategory.create({
+            data: {
+              recipeId: newRecipe.id,
+              categoryId: categoryData.id,
+            },
+          });
+        }
       }
+
+      redirect("/home");
     } catch (error) {
       console.error(error);
     }
@@ -138,22 +160,28 @@ export default function CreateRecipe() {
             <h2 className="mb-4 text-2xl font-bold">Ingredients </h2>
             <div className="mb-2 flex space-x-4">
               <input
-                name="ingredients"
+                name="ingredients[]"
                 type="text"
                 className="input input-bordered w-full"
                 placeholder="Name"
                 required
               />
-
+              <input
+                name="ingredientQuantities[]"
+                type="text"
+                className="input input-bordered w-full"
+                placeholder="Quantity"
+                required
+              />
             </div>
           </div>
           <div className="mb-6">
             <h2 className="mb-4 text-2xl font-bold">Steps </h2>
             <div className="mb-2">
               <textarea
-                name="instructions"
+                name="instructions[]"
                 className="textarea textarea-bordered w-full"
-                placeholder={`Step`}
+                placeholder="Step"
                 required
               />
             </div>
@@ -166,3 +194,4 @@ export default function CreateRecipe() {
     </div>
   );
 }
+
