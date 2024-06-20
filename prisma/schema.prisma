@@ -31,16 +31,16 @@ model Instruction {
 }
 
 model Recipe {
-  id             Int              @id @default(autoincrement())
   title          String
   description    String
-  imageUrl       String
-  prepTime       Int
-  cookTime       Int
-  servings       Int
-  userId         String
   createdAt      DateTime         @default(now())
   updatedAt      DateTime
+  cookTime       Int
+  imageUrl       String
+  prepTime       Int
+  servings       Int
+  id             Int              @id @default(autoincrement())
+  userId         String
   Ingredient     Ingredient[]
   Instruction    Instruction[]
   RecipeCategory RecipeCategory[]
